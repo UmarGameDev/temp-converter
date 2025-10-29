@@ -7,7 +7,7 @@ pipeline {
 
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Branch to build from')
-        string(name: 'STUDENT_NAME', defaultValue: 'umar riaz') // provide your name
+        string(name: 'STUDENT_NAME', defaultValue: 'Umar Riaz', description: 'Provide your full name')
         choice(name: 'ENVIRONMENT', choices: ['dev', 'qa', 'prod'], description: 'Select environment')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run Jest tests after build')
     }
@@ -27,18 +27,18 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                echo "Installing required packages..."
+                echo "Installing required npm packages..."
                 bat 'npm install'
             }
         }
 
         stage('Build') {
             steps {
-                echo "Building version ${APP_VERSION} for ${params.ENVIRONMENT}"
+                echo "Building version ${APP_VERSION} for ${params.ENVIRONMENT} environment"
                 bat '''
                     echo Simulating build process...
                     if not exist build mkdir build
-                    copy *.js build
+                    xcopy src\\*.js build\\ /Y
                     echo Build completed successfully!
                     echo App version: %APP_VERSION% > build\\version.txt
                 '''
@@ -73,10 +73,10 @@ pipeline {
             deleteDir()
         }
         success {
-            echo "Pipeline succeeded! Version ${APP_VERSION} built and tested."
+            echo "✅ Pipeline succeeded! Version ${APP_VERSION} built and tested successfully."
         }
         failure {
-            echo "Pipeline failed! Check console output for details."
+            echo "❌ Pipeline failed! Check console output for details."
         }
     }
 }
